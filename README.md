@@ -62,10 +62,6 @@ npm run build          # gera dist/
 npm run dev            # gera e abre em http://localhost:3000
 ```
 
-### Publicar na Vercel (grátis)
-
-1. Entre em [vercel.com](https://vercel.com) com a conta do GitHub (plano **Hobby**).
-2. **Add New → Project →** importe `JandersonSR/kub-learn-flow`.
 3. Deixe tudo como está (o `vercel.json` já define `npm run build` e a pasta `dist`) e clique em **Deploy**.
 4. O site fica em `https://kub-learn-flow-<algo>.vercel.app`. Em **Settings → Domains** dá para trocar o nome.
 
