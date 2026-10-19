@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-webapi
+  namespace: projeto-pratico
+  labels:
+    app: myapp-webapi
+    tier: backend
+spec:
+  replicas: 3
+  revisionHistoryLimit: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: myapp-webapi
+  template:
+    metadata:
+      labels:
+        app: myapp-webapi
+        tier: backend
+    spec:
+      containers:
+      - name: webapi
+        image: <docker-hub-account>/myapp-webapi:5.0
+        ports:
+        - containerPort: 8080
+          name: http
+        env:
+        - name: ASPNETCORE_URLS
+          value: "http://+:8080"
+        envFrom:
+        - configMapRef:
+            name: myapp-webapi-config
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5

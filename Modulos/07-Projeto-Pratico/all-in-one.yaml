@@ -1,0 +1,195 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: projeto-pratico
+  labels:
+    name: projeto-pratico
+    purpose: projeto-final
+    environment: dev
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: myapp-webapi-config
+  namespace: projeto-pratico
+  labels:
+    app: myapp-webapi
+data:
+  # Desconto (%) aplicado a todos os produtos pela MyApp.WebApi.
+  # Sem esta chave, a API usa 0% (valor nullable).
+  Discount__Percentage: "10"
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: myapp-webapp-secret
+  namespace: projeto-pratico
+  labels:
+    app: myapp-webapp
+type: Opaque
+stringData:
+  # Guardado em base64 (NAO e criptografia) no cluster.
+  ApiSettings__WebApiUrl: "http://myapp-webapi-service.projeto-pratico.svc.cluster.local"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-webapi
+  namespace: projeto-pratico
+  labels:
+    app: myapp-webapi
+    tier: backend
+spec:
+  replicas: 3
+  revisionHistoryLimit: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: myapp-webapi
+  template:
+    metadata:
+      labels:
+        app: myapp-webapi
+        tier: backend
+    spec:
+      containers:
+      - name: webapi
+        image: <docker-hub-account>/myapp-webapi:5.0
+        ports:
+        - containerPort: 8080
+          name: http
+        env:
+        - name: ASPNETCORE_URLS
+          value: "http://+:8080"
+        envFrom:
+        - configMapRef:
+            name: myapp-webapi-config
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-webapp
+  namespace: projeto-pratico
+  labels:
+    app: myapp-webapp
+    tier: frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: myapp-webapp
+  template:
+    metadata:
+      labels:
+        app: myapp-webapp
+        tier: frontend
+    spec:
+      containers:
+      - name: webapp
+        image: <docker-hub-account>/myapp-webapp:3.0
+        env:
+        - name: ApiSettings__WebApiUrl
+          valueFrom:
+            secretKeyRef:
+              name: myapp-webapp-secret
+              key: ApiSettings__WebApiUrl
+        ports:
+        - containerPort: 8080
+          name: http
+        resources:
+          requests:
+            memory: "32Mi"
+            cpu: "25m"
+          limits:
+            memory: "64Mi"
+            cpu: "50m"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp-webapi-service
+  namespace: projeto-pratico
+  labels:
+    app: myapp-webapi
+spec:
+  type: ClusterIP
+  selector:
+    app: myapp-webapi
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp-webapp-service
+  namespace: projeto-pratico
+  labels:
+    app: myapp-webapp
+spec:
+  type: ClusterIP
+  selector:
+    app: myapp-webapp
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 8080
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: myapp-ingress
+  namespace: projeto-pratico
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: myapp.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: myapp-webapp-service
+            port:
+              number: 80
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: myapp-webapi-service
+            port:
+              number: 80

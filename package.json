@@ -1,0 +1,14 @@
+{
+  "name": "kub-learn-flow",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Curso hands-on de Kubernetes: do Minikube ao projeto prático",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/build.mjs && npx --yes serve dist"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

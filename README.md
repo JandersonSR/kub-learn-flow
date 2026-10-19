@@ -1,6 +1,6 @@
-# Webinar Kubernetes + AKS (mão na massa)
+# Curso Kubernetes + AKS (mão na massa)
 
-## Por que este webinar existe
+## Por que este curso existe
 A ideia aqui é sair do “Kubernetes só na teoria” e ir para o **Kubernetes que você usa no dia a dia**, com prática guiada, comandos reais e manifests versionáveis, começando no **Minikube** (base sólida) e evoluindo para **AKS** (contexto de produção na Azure).
 
 ## O que vamos ver (sumário bem resumido)
@@ -25,3 +25,48 @@ A ideia aqui é sair do “Kubernetes só na teoria” e ir para o **Kubernetes 
 - CI/CD simples (Azure DevOps fazendo deploy no AKS)
 
 E muito mais!
+
+## Módulos
+
+Cada pasta em `Modulos/` é um passo a passo (`Content.md`) com os apps e os manifests daquele assunto:
+
+| Módulo | O que você aprende |
+|---|---|
+| [01 · Setup e primeiro deploy](Modulos/01-Setup-e-Primeiro-Deploy/Content.md) | Docker, imagem, Minikube e o primeiro app no Kubernetes |
+| [02 · YAML, Namespaces e Labels](Modulos/02-YAML-Namespaces-e-Labels/Content.md) | Descrever o app em arquivos YAML e organizar recursos |
+| [03 · Deployments](Modulos/03-Deployments-Scale-Rollout-Rollback/Content.md) | Réplicas, atualizar versão (rollout) e voltar atrás (rollback) |
+| [04 · Services](Modulos/04-Services-ClusterIP-NodePort/Content.md) | Conectar site ↔ API (ClusterIP) e acessar de fora (NodePort) |
+| [05 · Ingress](Modulos/05-Ingress/Content.md) | Um endereço amigável (host/path) para os apps |
+| [06 · ConfigMaps e Secrets](Modulos/06-ConfigMaps-e-Secrets/Content.md) | Configuração sem mexer no código |
+| [07 · Projeto prático](Modulos/07-Projeto-Pratico/Content.md) | Tudo junto, do zero ao app funcionando |
+
+## Site hands-on
+
+O mesmo conteúdo vira um site com menu dos módulos, passo a passo com check de "concluí", botão de copiar nos comandos e progresso salvo no navegador.
+
+```
+Modulos/*/Content.md   ← o conteúdo (cada "## " vira um passo)
+scripts/build.mjs      ← gera o site em dist/
+scripts/site.css|js    ← visual e interações
+vercel.json            ← build e cabeçalhos da hospedagem
+```
+
+Para mudar o site, edite o `Content.md` do módulo e dê `git push`. Um módulo novo é só uma pasta nova em `Modulos/` (ex.: `08-Health-Checks/Content.md`).
+
+### Rodar no computador
+
+Precisa de Node 18 ou mais novo.
+
+```bash
+npm run build          # gera dist/
+npm run dev            # gera e abre em http://localhost:3000
+```
+
+### Publicar na Vercel (grátis)
+
+1. Entre em [vercel.com](https://vercel.com) com a conta do GitHub (plano **Hobby**).
+2. **Add New → Project →** importe `JandersonSR/kub-learn-flow`.
+3. Deixe tudo como está (o `vercel.json` já define `npm run build` e a pasta `dist`) e clique em **Deploy**.
+4. O site fica em `https://kub-learn-flow-<algo>.vercel.app`. Em **Settings → Domains** dá para trocar o nome.
+
+Cada `git push` na `main` publica uma versão nova.

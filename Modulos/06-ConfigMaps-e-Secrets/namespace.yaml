@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: config-lab
+  labels:
+    name: config-lab
+    purpose: configmap-secret-demo

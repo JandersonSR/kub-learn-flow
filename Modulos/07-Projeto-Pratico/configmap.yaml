@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: myapp-webapi-config
+  namespace: projeto-pratico
+  labels:
+    app: myapp-webapi
+data:
+  # Desconto (%) aplicado a todos os produtos pela MyApp.WebApi.
+  # Sem esta chave, a API usa 0% (valor nullable).
+  Discount__Percentage: "10"

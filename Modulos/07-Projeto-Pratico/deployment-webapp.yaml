@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-webapp
+  namespace: projeto-pratico
+  labels:
+    app: myapp-webapp
+    tier: frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: myapp-webapp
+  template:
+    metadata:
+      labels:
+        app: myapp-webapp
+        tier: frontend
+    spec:
+      containers:
+      - name: webapp
+        image: <docker-hub-account>/myapp-webapp:3.0
+        env:
+        - name: ApiSettings__WebApiUrl
+          valueFrom:
+            secretKeyRef:
+              name: myapp-webapp-secret
+              key: ApiSettings__WebApiUrl
+        ports:
+        - containerPort: 8080
+          name: http
+        resources:
+          requests:
+            memory: "32Mi"
+            cpu: "25m"
+          limits:
+            memory: "64Mi"
+            cpu: "50m"
