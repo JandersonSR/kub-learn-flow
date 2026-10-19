@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: myapp-webapi-config
+  namespace: webinar6
+  labels:
+    app: myapp-webapi
+data:
+  # Fixed discount applied to all products (percentage, e.g. "10" = 10%).
+  # This key is nullable from the app's point of view: if the key (or the
+  # whole ConfigMap) is removed, MyApp.WebApi falls back to 0% discount.
+  Discount__Percentage: "10"

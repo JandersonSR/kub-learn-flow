@@ -1,0 +1,17 @@
+### Get all products
+GET http://localhost:5023/products
+Accept: application/json
+
+###
+
+### Get product by ID (valid)
+GET http://localhost:5023/products/1
+Accept: application/json
+
+###
+
+### Get product by ID (not found)
+GET http://localhost:5023/products/999
+Accept: application/json
+
+###

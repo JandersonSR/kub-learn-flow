@@ -1,0 +1,119 @@
+﻿@model MyApp.WebApp.Models.HomeViewModel
+@{
+    ViewData["Title"] = "MyApp - Frontend";
+}
+
+<div class="bg-primary bg-gradient text-white text-center py-5 mb-4">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-2">🚀 MyApp Frontend</h1>
+        <p class="lead">This is a ASPNET MVC WEB APP (SERVER SIDE)</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row g-4">
+        <!-- Instance Info Section -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h3 class="card-title text-center mb-4">📊 Informações da Instância</h3>
+                    
+                    <form asp-action="CallInstanceApi" asp-controller="Home" method="post">
+                        <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
+                            Chamar API de Instância
+                        </button>
+                    </form>
+                    
+                    @if (Model?.InstanceInfo != null)
+                    {
+                        @if (Model.InstanceInfo.HasError)
+                        {
+                            <div class="alert alert-danger" role="alert">
+                                <h5 class="alert-heading fw-bold">❌ Erro ao chamar API</h5>
+                                <hr>
+                                <p class="mb-0">@Model.InstanceInfo.ErrorMessage</p>
+                            </div>
+                        }
+                        else if (!string.IsNullOrEmpty(Model.InstanceInfo.InstanceId))
+                        {
+                            <div class="alert alert-success" role="alert">
+                                <strong>✅ API respondeu com sucesso!</strong>
+                            </div>
+                            
+                            <div class="bg-light rounded p-3">
+                                <div class="row mb-2 pb-2 border-bottom">
+                                    <div class="col-5 fw-bold text-primary">Instance ID:</div>
+                                    <div class="col-7 font-monospace small">@Model.InstanceInfo.InstanceId</div>
+                                </div>
+                                
+                                <div class="row mb-2 pb-2 border-bottom">
+                                    <div class="col-5 fw-bold text-primary">Hostname:</div>
+                                    <div class="col-7 font-monospace small">@Model.InstanceInfo.Hostname</div>
+                                </div>
+                                
+                                <div class="row mb-2 pb-2 border-bottom">
+                                    <div class="col-5 fw-bold text-primary">Startup:</div>
+                                    <div class="col-7 font-monospace small">@Model.InstanceInfo.StartupTime?.ToString("dd/MM/yyyy HH:mm:ss")</div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-5 fw-bold text-primary">Uptime:</div>
+                                    <div class="col-7 font-monospace small">@Model.InstanceInfo.Uptime</div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+        
+        <!-- Products Section -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h3 class="card-title text-center mb-4">🛍️ Produtos</h3>
+                    
+                    <form asp-action="CallProductsApi" asp-controller="Home" method="post">
+                        <button type="submit" class="btn btn-success btn-lg w-100 mb-3">
+                            Listar Produtos
+                        </button>
+                    </form>
+                    
+                    @if (Model?.Products != null)
+                    {
+                        @if (Model.HasProductsError)
+                        {
+                            <div class="alert alert-danger" role="alert">
+                                <h5 class="alert-heading fw-bold">❌ Erro ao chamar API</h5>
+                                <hr>
+                                <p class="mb-0">@Model.ProductsErrorMessage</p>
+                            </div>
+                        }
+                        else if (Model.Products.Any())
+                        {
+                            <div class="alert alert-success" role="alert">
+                                <strong>✅ @Model.Products.Count produto(s) encontrado(s)!</strong>
+                            </div>
+                            
+                            <div style="max-height: 500px; overflow-y: auto;">
+                                @foreach (var product in Model.Products)
+                                {
+                                    <div class="card mb-3 border-secondary">
+                                        <div class="card-body">
+                                            <h5 class="card-title text-primary fw-bold">@product.Name</h5>
+                                            <p class="card-text text-muted mb-3">@product.Description</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span class="fs-5 fw-bold text-success">$ @product.Price.ToString("N2")</span>
+                                                <span class="badge bg-primary">ID: @product.Id</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: webinar5
+  labels:
+    name: webinar5
+    purpose: ingress-demo
