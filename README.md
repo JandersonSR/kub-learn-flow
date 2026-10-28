@@ -26,6 +26,13 @@ A ideia aqui é sair do “Kubernetes só na teoria” e ir para o **Kubernetes 
 
 E muito mais!
 
+## Depois deste curso
+
+Este curso é o degrau 1. Os próximos:
+
+- **Na prática, na Azure:** [aks-step-by-step](https://github.com/JandersonSR/aks-step-by-step) leva uma API ASP.NET real para o AKS, um nível por vez (Helm, CI/CD, Ingress, Key Vault, Terraform, Argo CD, Kafka, Harbor).
+- **O porquê de cada peça:** o curso [Plataforma .NET em Produção](https://learnflowprojec.vercel.app/projetos/plataforma-dotnet/docs/README.html), no learnFlow, explica a stack inteira com conceitos, vídeos, previsões e labs de quebra. O Módulo 6 de lá aponta para os módulos daqui, e o [Módulo 7 (Helm)](https://learnflowprojec.vercel.app/projetos/plataforma-dotnet/docs/modulo-07/README.html) continua de onde este curso para.
+
 ## Módulos
 
 Cada pasta em `Modulos/` é um passo a passo (`Content.md`) com os apps e os manifests daquele assunto:
